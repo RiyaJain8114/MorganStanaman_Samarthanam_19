@@ -1,0 +1,102 @@
+User_ID,Feedback,Sentiment
+1,"The chatbot was incredibly useful! It guided me step by step through the registration process, and I was able to sign up for an event within minutes.",Positive
+2,"I really liked how the chatbot responded quickly and provided clear instructions. It made volunteering registration very easy.",Positive
+3,"The bot was able to understand my queries accurately, and I didn't have to repeat myself. This was a great experience!",Positive
+4,"While the chatbot was helpful, I wish it provided more details about the events instead of just listing them.",Neutral
+5,"It was frustrating because the chatbot kept misunderstanding my question about event timings. It needs improvement.",Negative
+6,"I was pleasantly surprised at how smoothly the chatbot handled my registration. It even reminded me of my event!",Positive
+7,"Good experience overall, but there were moments when the chatbot responses felt a little robotic.",Neutral
+8,"I tried asking about multiple events at once, but the bot didn’t handle that well. I had to ask one by one, which was annoying.",Negative
+9,"I love how interactive the chatbot is! It not only answered my questions but also recommended relevant events.",Positive
+10,"Decent chatbot. It works well, but sometimes it takes a bit too long to respond.",Neutral
+11,"The chatbot was friendly and efficient. I never imagined a bot could make event registration so seamless!",Positive
+12,"This chatbot does the job, but I would have preferred a human assistant for a more personal touch.",Neutral
+13,"I found it quite slow in responding, especially when I asked for event details. Needs improvement.",Negative
+14,"Fantastic chatbot! It even reminded me to update my event preferences based on past registrations.",Positive
+15,"I had to repeat my question twice before it understood me correctly. That was a bit frustrating.",Negative
+16,"It gave me the information I needed, but the conversation felt unnatural at times.",Neutral
+17,"Really loved how it helped me pick the right event based on my interests. Very well designed!",Positive
+18,"This chatbot is a great initiative, but it should have a back button when you make a mistake.",Neutral
+19,"I was disappointed that it couldn’t answer my question about volunteer stipends. Needs more knowledge.",Negative
+20,"The chatbot made event registration completely hassle-free. It even confirmed my details before submission.",Positive
+21,"It was alright. It gave me what I needed but didn’t feel particularly engaging.",Neutral
+22,"I spent more time trying to make it understand my question than getting an answer. Not great.",Negative
+23,"I appreciate how the chatbot suggested upcoming events relevant to my past registrations.",Positive
+24,"It’s good for basic queries, but anything slightly complex confuses it.",Neutral
+25,"I tried asking for event timings, and it gave me incorrect information. That was frustrating.",Negative
+26,"Super efficient chatbot! It made me feel like I was talking to an actual assistant.",Positive
+27,"The responses were clear, but I wish it had a voice assistant feature.",Neutral
+28,"It kept looping through the same response even when I rephrased my question. Needs work.",Negative
+29,"The chatbot was extremely user-friendly, and I was able to complete my registration quickly.",Positive
+30,"It answered my questions correctly, but I felt like it could be a bit more conversational.",Neutral
+31,"I asked for assistance, and the bot took too long to respond. Not a great experience.",Negative
+32,"Loved the chatbot! It even helped me find relevant volunteering opportunities.",Positive
+33,"Good tool for registration, but it should allow more flexibility in how users interact with it.",Neutral
+34,"The chatbot needs more intelligence. It couldn’t process simple event-related queries.",Negative
+35,"It’s impressive how quickly the chatbot provided event details. Great job!",Positive
+36,"Useful, but sometimes it repeats information unnecessarily.",Neutral
+37,"I couldn’t complete my registration because the bot didn’t recognize my phone number format.",Negative
+38,"Very intuitive interface! It was really easy to navigate and get information.",Positive
+39,"The chatbot is helpful but should be a little more flexible with different question formats.",Neutral
+40,"It failed to register me for an event, and I had to start over. Very frustrating.",Negative
+41,"This chatbot is amazing! It even suggested volunteering roles that matched my skills.",Positive
+42,"It’s okay, but I still prefer talking to a real person for better assistance.",Neutral
+43,"When I asked for help, it just kept redirecting me to FAQs instead of answering my question.",Negative
+44,"Fantastic service! It was like chatting with a knowledgeable assistant.",Positive
+45,"Decent chatbot, but I think it could use more personality to feel more engaging.",Neutral
+46,"The chatbot completely misunderstood my query. I had to contact customer support instead.",Negative
+47,"I liked how smoothly it guided me through the event selection process.",Positive
+48,"It works fine, but I expected it to handle more complex queries.",Neutral
+49,"I asked the chatbot for event registration, and it kept asking for my details again and again. Very annoying.",Negative
+50,"Really impressive! It even provided me with reminders for my registered event.",Positive
+51,"Good chatbot, but it should integrate with email notifications for better assistance.",Neutral
+52,"The chatbot couldn’t provide an answer to my specific question. I had to search the website instead.",Negative
+53,"I loved the chatbot’s efficiency! I completed my registration within minutes.",Positive
+54,"I appreciate its quick responses, but sometimes it gives very generic answers.",Neutral
+55,"It struggled to recognize some words and gave irrelevant responses at times.",Negative
+56,"Really smooth and effective! I didn’t expect it to be this helpful.",Positive
+57,"It’s a useful tool, but I wish it supported more languages.",Neutral
+58,"I tried asking for past event details, but it didn’t have any historical data.",Negative
+59,"Very easy to use! I would definitely recommend this chatbot to others.",Positive
+60,"It’s an okay chatbot, but it could benefit from more interactive elements.",Neutral
+61,"It gave me the wrong event details, and I almost missed an important session.",Negative
+62,"Super useful! The chatbot even guided me on how to prepare for the event.",Positive
+63,"Nice chatbot, but I prefer a more human-like conversation flow.",Neutral
+64,"It couldn’t answer my basic query about event capacity. Needs more data.",Negative
+65,"Highly efficient! I didn’t have to type much, and it understood everything quickly.",Positive
+66,"It’s alright, but the text could be formatted better for readability.",Neutral
+67,"I tried canceling my registration, but it didn’t have an option for that.",Negative
+68,"Really smart chatbot! It even helped me update my volunteer details easily.",Positive
+69,"It does the job, but sometimes it feels too scripted.",Neutral
+70,"I had to repeat my query three times before getting a proper response.",Negative
+71,"The chatbot exceeded my expectations! It was fast, efficient, and answered all my questions without any confusion.",Positive
+72,"It’s a decent chatbot, but sometimes it feels repetitive when answering queries.",Neutral
+73,"I had a terrible experience. It kept redirecting me to irrelevant sections instead of answering my specific question.",Negative
+74,"I was impressed by how the chatbot suggested volunteering opportunities that matched my skills!",Positive
+75,"It’s useful, but I feel like it should be more conversational to make interactions more engaging.",Neutral
+76,"I tried registering, but the chatbot didn’t confirm my submission. That was frustrating.",Negative
+77,"Loved using this chatbot! It even helped me understand the event details better than the website did.",Positive
+78,"It gave me the information I needed, but I wish it had more interactive elements.",Neutral
+79,"The chatbot struggled to understand my request, and I had to rephrase multiple times.",Negative
+80,"Such a convenient tool! I registered for an event in under two minutes without any issues.",Positive
+81,"Good chatbot overall, but it would be nice if it had an option to contact human support.",Neutral
+82,"I got stuck on one of the registration questions, and the chatbot didn’t provide a way to go back.",Negative
+83,"It was a pleasant experience! The chatbot even reminded me of my upcoming event.",Positive
+84,"It’s fine, but sometimes it repeats answers I already acknowledged.",Neutral
+85,"The chatbot was completely unhelpful in answering my event-related questions.",Negative
+86,"I was amazed by how smoothly the chatbot handled my registration. It even sent me confirmation details instantly!",Positive
+87,"It works fine, but I think it should have a better way of handling multiple-choice answers.",Neutral
+88,"Not impressed. It kept providing the same generic responses to my specific queries.",Negative
+89,"I appreciate how the chatbot guided me step by step through the event registration process!",Positive
+90,"Good tool, but it could use better formatting for longer responses.",Neutral
+91,"I wasn’t able to update my registration details, and the chatbot didn’t help.",Negative
+92,"I loved how responsive the chatbot was! It saved me a lot of time.",Positive
+93,"It’s okay, but the text is too small on mobile, making it a bit hard to read.",Neutral
+94,"I tried to correct a mistake in my registration, but the chatbot didn’t give me an option to do so.",Negative
+95,"Amazing experience! The chatbot even recommended a volunteering opportunity that suited my schedule.",Positive
+96,"It provided clear instructions, but I wish it allowed for more free-text responses instead of predefined options.",Neutral
+97,"It failed to understand my query about event timings. I had to ask support instead.",Negative
+98,"The chatbot was incredibly smooth and user-friendly! I got my event details within seconds.",Positive
+99,"Decent experience, but I wish it supported more regional languages.",Neutral
+100,"Great chatbot! I never thought registering for an event could be this simple.",Positive
+
