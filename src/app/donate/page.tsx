@@ -315,6 +315,11 @@ export default function DonatePage() {
       setError('Please fill all required fields');
       return;
     }
+
+    if(formData.phone.length!==10){
+      setError("Please Enter Valid Phone Number");
+      return;
+    }
     
     // Ensure the donation date is the current date/time when submitted
     const donationPayload = {

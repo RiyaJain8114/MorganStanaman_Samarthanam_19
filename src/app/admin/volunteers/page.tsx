@@ -42,6 +42,7 @@ import Layout from '../../../components/layout/Layout';
 import { RootState } from '../../../redux/store';
 import { THEME_COLORS } from '../../../components/layout/Layout';
 import { Download as DownloadIcon, Edit as EditIcon } from '@mui/icons-material';
+import {userAPI} from '../../../utils/api';
 
 // Icons
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
@@ -53,54 +54,57 @@ import EmailIcon from '@mui/icons-material/Email';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
-// Mock volunteer data
-const mockVolunteers = [
-  {
-    id: 1,
-    name: 'John Volunteer',
-    email: 'john12@gmail.com',
-    phone: '+91 9876543210',
-    joinDate: '23 March 2025',
-    status: 'Active',
-    events: 12,
-    hours: 150,
-    verified: true,
-  },
-  {
-    id: 2,
-    name: 'ananya',
-    email: 'arora.ananya05@gmail.com',
-    phone: '+91 9990354943',
-    joinDate: '23 March 2025',
-    status: 'Active',
-    events: 4,
-    hours: 48,
-    verified: true,
-  },
-  {
-    id: 'vol3',
-    name: 'Riya Jain',
-    email: 'riyajain1040@gmail.com',
-    phone: '+91 7654321098',
-    joinDate: '24 March 2025',
-    status: 'inactive',
-    verified: true,
-    eventsAttended: 3,
-    hoursLogged: 0,
-  },
-  {
-    id: 'vol4',
-    name: 'Namita Bhatt',
-    email: 'namitabhatt@gmail.com',
-    phone: '+91 6543210987',
-    joinDate: '26 March 2025',
-    status: 'inactive',
-    verified: true,
-    eventsAttended: 1,
-    hoursLogged: 0,
-  },
 
-];
+import {exportToCSV} from '../../../utils/exportToCSV'
+
+// Mock volunteer data
+// const mockVolunteers = [
+//   {
+//     id: 1,
+//     name: 'John Volunteer',
+//     email: 'john12@gmail.com',
+//     phone: '+91 9876543210',
+//     joinDate: '23 March 2025',
+//     status: 'Active',
+//     events: 12,
+//     hours: 150,
+//     verified: true,
+//   },
+//   {
+//     id: 2,
+//     name: 'ananya',
+//     email: 'arora.ananya05@gmail.com',
+//     phone: '+91 9990354943',
+//     joinDate: '23 March 2025',
+//     status: 'Active',
+//     events: 4,
+//     hours: 48,
+//     verified: true,
+//   },
+//   {
+//     id: 'vol3',
+//     name: 'Riya Jain',
+//     email: 'riyajain1040@gmail.com',
+//     phone: '+91 7654321098',
+//     joinDate: '24 March 2025',
+//     status: 'inactive',
+//     verified: true,
+//     eventsAttended: 3,
+//     hoursLogged: 0,
+//   },
+//   {
+//     id: 'vol4',
+//     name: 'Namita Bhatt',
+//     email: 'namitabhatt@gmail.com',
+//     phone: '+91 6543210987',
+//     joinDate: '26 March 2025',
+//     status: 'inactive',
+//     verified: true,
+//     eventsAttended: 1,
+//     hoursLogged: 0,
+//   },
+
+// ];
 
 // Stats for the dashboard
 const volunteerStats = [
@@ -137,6 +141,34 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
+// Interface for Volunteer Profile
+
+export interface VolunteerProfile {
+  address: string;
+  availability: string;
+  badges: string[];
+  bio: string;
+  certificates: string[];
+  events_participated: string[];
+  hours_contributed: number;
+  interests: string[];
+  phone_number: string;
+  photo_url: string;
+  points: number;
+  skills: string[];
+}
+
+export interface Volunteer {
+  id: string;
+  name: string;
+  email: string;
+  role: 'volunteer';
+  profile: VolunteerProfile;
+  status: string;
+  joined_at: string;
+}
+
+
 export default function VolunteerManagementPage() {
   const router = useRouter();
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -150,6 +182,7 @@ export default function VolunteerManagementPage() {
   const [selectedVolunteer, setSelectedVolunteer] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogType, setDialogType] = useState<'view' | 'edit' | 'delete' | 'add'>('view');
+  const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
   
   const open = Boolean(anchorEl);
 
@@ -165,12 +198,18 @@ export default function VolunteerManagementPage() {
       return;
     }
 
-    // Simulate loading delay
-    const timer = setTimeout(() => {
+    const loadVolunteers = async () => {
+    try {
+      const response = await userAPI.getAllUsers('volunteer');
+      // console.log("Fetched volunteers:", response.data.users);
+      setVolunteers(response.data.users); // Store fetched volunteers
+    } catch (error) {
+      console.error('Error fetching volunteers:', error);
+    } finally {
       setIsLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
+    }
+    };
+    loadVolunteers();
   }, [isAuthenticated, router, user?.role]);
 
   // Handle tab change
@@ -219,7 +258,7 @@ export default function VolunteerManagementPage() {
   };
 
   // Filter volunteers based on search and filter
-  const filteredVolunteers = mockVolunteers.filter((volunteer) => {
+  const filteredVolunteers = volunteers.filter((volunteer) => {
     // Search filter
     const matchesSearch = 
       volunteer.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -257,6 +296,11 @@ export default function VolunteerManagementPage() {
     }
   };
 
+  // Handle export to CSV
+  const handleExportCSV = ()=>{
+  exportToCSV(filteredVolunteers, 'volunteers');
+} 
+
   if (isLoading) {
     return (
       <Layout>
@@ -273,6 +317,8 @@ export default function VolunteerManagementPage() {
       </Layout>
     );
   }
+
+  
 
   return (
     <Layout>
@@ -296,11 +342,13 @@ export default function VolunteerManagementPage() {
               size="small"
               placeholder="Search volunteers..."
               sx={{ width: 300 }}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             <Button
               variant="contained"
               startIcon={<DownloadIcon />}
               size="small"
+              onClick={handleExportCSV}
             >
               Export
             </Button>
@@ -321,27 +369,28 @@ export default function VolunteerManagementPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {mockVolunteers.map((volunteer) => (
+                {filteredVolunteers.map((volunteer) => (
                   <TableRow key={volunteer.id} hover>
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Avatar sx={{ width: 30, height: 30, mr: 1 }}>{volunteer.name[0]}</Avatar>
                         <Box>
                           {volunteer.name}
-                          {volunteer.verified && (
+                          {/* Verified property isn't there in the schema. Uncomment if you want to show verified badge */}
+                          {/* {volunteer.verified && (
                             <Chip
                               label="Verified"
                               size="small"
                               color="primary"
                               sx={{ ml: 1, height: 20 }}
                             />
-                          )}
+                          )} */}
                         </Box>
                       </Box>
                     </TableCell>
                     <TableCell>{volunteer.email}</TableCell>
-                    <TableCell>{volunteer.phone}</TableCell>
-                    <TableCell>{volunteer.joinDate}</TableCell>
+                    <TableCell>{volunteer.profile.phone_number}</TableCell>
+                    <TableCell>{volunteer.joined_at}</TableCell>
                     <TableCell>
                       <Chip
                         label={volunteer.status}
@@ -350,8 +399,8 @@ export default function VolunteerManagementPage() {
                         sx={{ height: 20 }}
                       />
                     </TableCell>
-                    <TableCell align="center">{volunteer.events}</TableCell>
-                    <TableCell align="center">{volunteer.hours}</TableCell>
+                    <TableCell align="center">{volunteer.profile.events_participated.length}</TableCell>
+                    <TableCell align="center">{volunteer.profile.hours_contributed}</TableCell>
                     <TableCell padding="checkbox">
                       <IconButton size="small">
                         <EditIcon fontSize="small" />

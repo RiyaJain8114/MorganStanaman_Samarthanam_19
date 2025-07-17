@@ -47,6 +47,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EmailIcon from '@mui/icons-material/Email';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { exportToCSV } from '@/utils/exportToCSV';
 // Removed unused icons that were only used in stats cards
 // import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 // import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
@@ -349,6 +350,11 @@ export default function DonationsManagement() {
     }).format(amount);
   };
 
+  //handle download CSV
+  const handleDownloadCSV = () => {
+    exportToCSV(filteredDonations, 'donations');
+  };
+
   if (isLoading) {
     return (
       <Layout>
@@ -478,6 +484,7 @@ export default function DonationsManagement() {
                     bgcolor: '#2196F3',
                     '&:hover': { bgcolor: '#1976D2' }
                   }}
+                  onClick={handleDownloadCSV}
                 >
                   Export CSV
                 </Button>

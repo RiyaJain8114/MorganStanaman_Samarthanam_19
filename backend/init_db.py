@@ -43,7 +43,7 @@ def init_db():
             'created_at': datetime.utcnow(),
             'updated_at': datetime.utcnow(),
             'last_login': datetime.utcnow() - timedelta(hours=2),
-            'is_active': True
+            'is_active': True,
         }
         db.users.insert_one(admin_user)
         
@@ -71,7 +71,7 @@ def init_db():
             'created_at': datetime.utcnow(),
             'updated_at': datetime.utcnow(),
             'last_login': datetime.utcnow() - timedelta(days=2),
-            'is_active': True
+            'is_active': True,
         }
         db.users.insert_one(volunteer_user)
         
@@ -96,7 +96,7 @@ def init_db():
             'created_at': datetime.utcnow(),
             'updated_at': datetime.utcnow(),
             'last_login': datetime.utcnow() - timedelta(days=1),
-            'is_active': True
+            'is_active': True,
         }
         db.users.insert_one(participant_user)
         
@@ -107,8 +107,8 @@ def init_db():
                 '_id': ObjectId(),
                 'event_name': 'Charity Run 2023',
                 'description': 'Annual charity run to raise funds for visual impairment education',
-                'start_date': (datetime.utcnow() + timedelta(days=30)).strftime('%Y-%m-%d'),
-                'end_date': (datetime.utcnow() + timedelta(days=30)).strftime('%Y-%m-%d'),
+                'start_date': (datetime.utcnow() + timedelta(days=2)).strftime('%Y-%m-%d'),
+                'end_date': (datetime.utcnow() + timedelta(days=2)).strftime('%Y-%m-%d'),
                 'location': 'Cubbon Park',
                 'category': 'Sports',
                 'status': 'Upcoming',
@@ -129,8 +129,8 @@ def init_db():
                 '_id': ObjectId(),
                 'event_name': 'Education Workshop',
                 'description': 'Workshop on teaching methods for visually impaired students',
-                'start_date': (datetime.utcnow() + timedelta(days=45)).strftime('%Y-%m-%d'),
-                'end_date': (datetime.utcnow() + timedelta(days=46)).strftime('%Y-%m-%d'),
+                'start_date': (datetime.utcnow() + timedelta(days=3)).strftime('%Y-%m-%d'),
+                'end_date': (datetime.utcnow() + timedelta(days=3)).strftime('%Y-%m-%d'),
                 'location': 'Samarthanam Center',
                 'category': 'Education',
                 'status': 'Upcoming',
@@ -151,7 +151,7 @@ def init_db():
                 '_id': ObjectId(),
                 'event_name': 'Art Exhibition',
                 'description': 'Art exhibition featuring works by differently-abled artists',
-                'start_date': (datetime.utcnow() - timedelta(days=5)).strftime('%Y-%m-%d'),
+                'start_date': (datetime.utcnow() + timedelta(days=5)).strftime('%Y-%m-%d'),
                 'end_date': (datetime.utcnow() + timedelta(days=5)).strftime('%Y-%m-%d'),
                 'location': 'Gallery 1',
                 'category': 'Cultural',
@@ -173,8 +173,8 @@ def init_db():
                 '_id': ObjectId(),
                 'event_name': 'Career Fair for Differently-Abled',
                 'description': 'Career fair connecting differently-abled job seekers with inclusive employers',
-                'start_date': (datetime.utcnow() - timedelta(days=30)).strftime('%Y-%m-%d'),
-                'end_date': (datetime.utcnow() - timedelta(days=30)).strftime('%Y-%m-%d'),
+                'start_date': (datetime.utcnow() - timedelta(days=7)).strftime('%Y-%m-%d'),
+                'end_date': (datetime.utcnow() - timedelta(days=7)).strftime('%Y-%m-%d'),
                 'location': 'Convention Center',
                 'category': 'Community',
                 'status': 'Completed',

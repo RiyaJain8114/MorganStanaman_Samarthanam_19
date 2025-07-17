@@ -38,7 +38,7 @@ const EventRecommendations: React.FC<EventRecommendationsProps> = ({
   // Get recommendations based on matching category or location
   const recommendations = React.useMemo(() => {
     // Always include a beach cleanup event
-    const beachCleanupEvent = {
+    const beachCleanupEvent:EventData = {
       id: 'beach-cleanup-event',
       title: 'Beach Cleanup Volunteer Day',
       description: 'Join us for a day of cleaning our local beaches and protecting marine life.',

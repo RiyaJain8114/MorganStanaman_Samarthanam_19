@@ -301,7 +301,7 @@ export default function VolunteerDashboard() {
               <Grid container spacing={3} alignItems="center" sx={{ p: 3, position: 'relative', zIndex: 1 }}>
                 <Grid item xs={12} sm={2}>
                   <Avatar
-                    src={user?.photoURL || ''}
+                    src={user?.profileImage || ''}
                     alt={user?.displayName}
                     sx={{ 
                       width: 100, 
@@ -512,7 +512,7 @@ export default function VolunteerDashboard() {
                   </Grid>
                 </Grid>
                 
-                <Typography variant="h6" gutterBottom sx={{ mt: 4, color: "#FF5722", fontWeight: "bold" }}>
+                {/* <Typography variant="h6" gutterBottom sx={{ mt: 4, color: "#FF5722", fontWeight: "bold" }}>
                   Recent Activity
                 </Typography>
                 
@@ -572,7 +572,7 @@ export default function VolunteerDashboard() {
                       </Card>
                     </Grid>
                   ))}
-                </Grid>
+                </Grid> */}
               </Paper>
             )}
 
@@ -607,11 +607,12 @@ export default function VolunteerDashboard() {
                             <Typography variant="h6" component="h3" fontWeight="bold" gutterBottom>
                               {event.title}
                             </Typography>
-                            <Chip
+                            {/* Upcoming Events dont have hours property */}
+                            {/* <Chip
                               label={`${event.hours} Hours`}
                               size="small"
                               sx={{ mb: 2, bgcolor: '#4CAF50', color: 'white', fontWeight: 'medium' }}
-                            />
+                            /> */}
                             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                               <CalendarTodayIcon fontSize="small" color="primary" sx={{ mr: 1 }} />
                               <Typography variant="body2">

@@ -37,7 +37,7 @@ import {
 import { PieChart } from '@mui/x-charts/PieChart';
 import { BarChart } from '@mui/x-charts/BarChart';
 import Layout from '../../components/layout/Layout';
-import { Link as NextLink } from 'next/link';
+import  NextLink  from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
@@ -54,6 +54,8 @@ import { calculateEventStatus } from '../events/page';
 import { Event, EventsByStatus } from '../../types/events';
 import EventIcon from '@mui/icons-material/Event';
 import StarIcon from '@mui/icons-material/Star';
+import { fetchUserProfile } from '@/redux/actions/userActions';
+import { useAppDispatch } from '@/redux/hooks';
 
 // Interface matching the one in userSlice.ts
 interface UserProfile {
@@ -346,9 +348,9 @@ const EventCard = ({ event, status }: { event: any, status: string }) => {
 
 const ProfilePage = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
-  const { profile: userProfile, loading, error } = useSelector((state: RootState) => state.user);
+  const { profile: userProfile, isLoading, error } = useSelector((state: RootState) => state.user);
   const [activeSection, setActiveSection] = useState('overview');
   const [tabValue, setTabValue] = useState(0);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
@@ -416,7 +418,7 @@ const ProfilePage = () => {
   const handleEmailCertificate = () => {
     // Simulate email sending
     setTimeout(() => {
-      alert(`Certificate for event ${selectedEvent} has been emailed to ${userProfile.email}`);
+      alert(`Certificate for event ${selectedEvent} has been emailed to ${userProfile?.email}`);
     }, 1000);
     handleCloseCertModal();
   };
@@ -487,7 +489,8 @@ const ProfilePage = () => {
     }
 
     // If we have user data, but profile data is not loaded yet
-    if (user && Object.keys(userProfile).length === 0) {
+    // if (user && userProfile && Object.keys(userProfile).length === 0) {
+    if (user && !userProfile) {
       dispatch(fetchUserProfile());
     }
     
@@ -757,7 +760,7 @@ const ProfilePage = () => {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Layout>
         <Container maxWidth="md" sx={{ py: 4 }}>

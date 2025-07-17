@@ -67,14 +67,17 @@ def login():
         return jsonify({'error': 'Missing email or password'}), 400
     
     # Find user by email
+    print(data)
     user = get_user_by_email(data['email'])
     
     # Check if user exists
     if not user:
+        print("User not found", user)
         return jsonify({'error': 'User not registered. Please create an account first.'}), 401
     
     # Verify password
     if not verify_password(user, data['password']):
+        print("Invalid password for user", user['email'])
         return jsonify({'error': 'Invalid password. Please try again.'}), 401
     
     # Update last login time

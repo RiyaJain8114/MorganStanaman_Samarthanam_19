@@ -35,6 +35,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import Layout from '../../../components/layout/Layout';
 import { RootState } from '../../../redux/store';
 import { addEvent } from '../../../redux/slices/eventSlice';
+import { SelectChangeEvent } from '@mui/material';
 
 // Event categories
 const EVENT_CATEGORIES = [
@@ -93,7 +94,8 @@ const CreateEventPage: React.FC = () => {
   useEffect(() => {
     // If not authenticated or not an organizer, redirect to login
     if (isAuthenticated && user) {
-      if (user.role !== 'organizer' && user.role !== 'admin') {
+      // if (user.role !== 'organizer' && user.role !== 'admin') {
+      if (user.role !== 'admin') {
         router.push('/login');
       }
     } else {
@@ -101,8 +103,9 @@ const CreateEventPage: React.FC = () => {
     }
   }, [isAuthenticated, user, router]);
   
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
-    const { name, value } = e.target;
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent) => {
+    const { name, value } = e.target as HTMLInputElement | HTMLTextAreaElement;
     if (name) {
       setFormData({
         ...formData,
@@ -199,65 +202,73 @@ const CreateEventPage: React.FC = () => {
   };
   
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    
-    // Final validation
-    if (!formData.title || !formData.description || !formData.location || !formData.category ||
-        !formData.startDate || !formData.endDate || formData.participantLimit <= 0) {
-      setError('Please ensure all required fields are filled correctly');
-      return;
-    }
-    
-    setLoading(true);
-    
-    try {
-      // In a real app, you would send this to your API
-      // For now, we'll simulate an API call with a delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Create a new event with the form data
-      const newEvent = {
-        id: `event-${Date.now()}`,
-        title: formData.title,
-        description: formData.description,
-        location: formData.location,
-        startDate: formData.startDate!.toISOString(),
-        endDate: formData.endDate!.toISOString(),
-        category: formData.category,
-        status: 'upcoming' as const,
-        organizerId: user?.uid || '',
-        organizerName: user?.displayName || 'Anonymous',
-        imageUrl: formData.imageUrl,
-        participantLimit: formData.participantLimit,
-        participants: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        requirements: formData.requirements,
-        skills: formData.skills,
-        ageRestriction: formData.ageRestriction,
-        contact: formData.contact,
-      };
-      
-      // Dispatch to Redux store
-      dispatch(addEvent(newEvent));
-      
-      // Show success message and reset form
-      setSuccess(true);
-      resetForm();
-      
-      // Redirect to the event's page after a delay
-      setTimeout(() => {
-        router.push(`/events/${newEvent.id}`);
-      }, 2000);
-      
-    } catch (err: any) {
-      console.error('Error creating event:', err);
-      setError(err.message || 'Failed to create event. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  e.preventDefault();
+  setError(null);
+
+  // Final validation
+  if (
+    !formData.title || 
+    !formData.description || 
+    !formData.location || 
+    !formData.category ||
+    !formData.startDate || 
+    !formData.endDate || 
+    formData.participantLimit <= 0
+  ) {
+    setError('Please ensure all required fields are filled correctly');
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const apiClient = (await import('../../../utils/api.js')).default;
+
+    // Prepare data for backend
+    const payload = {
+      event_name: formData.title,
+      description: formData.description,
+      location: formData.location,
+      start_date: formData.startDate.toISOString(),
+      end_date: formData.endDate.toISOString(),
+      category: formData.category,
+      status: 'Upcoming',
+      event_image: formData.imageUrl,
+      participant_limit: Number(formData.participantLimit),
+      participants: [],
+      requirements: formData.requirements || [],
+      skills_needed: formData.skills || [],
+      age_restriction: formData.ageRestriction || 'No Restriction',
+      contact_information: formData.contact || '',
+      points_awarded: 0,
+      hours_required: 0,
+      publish_event: false,
+    };
+
+    // Send to backend
+    const response = await apiClient.events.createEvent(payload);
+    const newEvent = response.data.event;
+
+    // Dispatch to Redux store (if needed)
+    dispatch(addEvent(newEvent));
+
+    // Show success and reset
+    setSuccess(true);
+    resetForm();
+
+    // Redirect to event page
+    setTimeout(() => {
+      router.push(`/events/${newEvent.event_id}`);
+    }, 2000);
+
+  } catch (err: any) {
+    console.error('Error creating event:', err);
+    setError(err.response?.data?.error || err.message || 'Failed to create event. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
+
   
   const resetForm = () => {
     setFormData({
@@ -674,7 +685,8 @@ const CreateEventPage: React.FC = () => {
     }
   };
   
-  if (!isAuthenticated || (user && user.role !== 'organizer' && user.role !== 'admin')) {
+  // if (!isAuthenticated || (user && user.role !== 'organizer' && user.role !== 'admin')) {
+  if (!isAuthenticated || (user && user.role !== 'admin')) {
     return (
       <Layout>
         <Container maxWidth="md" sx={{ py: 8 }}>
@@ -725,6 +737,7 @@ const CreateEventPage: React.FC = () => {
             
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
               <Button
+                type='button'
                 variant="outlined"
                 onClick={activeStep === 0 ? () => router.push('/events') : handleBack}
                 disabled={loading}
@@ -743,6 +756,7 @@ const CreateEventPage: React.FC = () => {
                 </Button>
               ) : (
                 <Button
+                  type='button'
                   variant="contained"
                   color="primary"
                   onClick={handleNext}

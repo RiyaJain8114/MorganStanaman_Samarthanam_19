@@ -29,6 +29,13 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Link from 'next/link';
 
+//type declaration for activity
+export interface Activity{
+  action: string;
+  name: string;
+  time: string;
+}
+
 // Recent Activities
 const recentActivities = [
   { action: 'New volunteer registration', name: 'Priya Sharma', time: '15 minutes ago' },
@@ -47,7 +54,7 @@ export default function AdminDashboard() {
     totalDonations: '₹0',
     engagementRate: '0%',
   });
-  const [activities, setActivities] = useState([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
 
   useEffect(() => {
     // Check if user is authenticated and is an admin
@@ -316,7 +323,7 @@ export default function AdminDashboard() {
               </Grid>
             </Paper>
           </Grid>
-          <Grid item xs={12} md={4}>
+          {/* <Grid item xs={12} md={4}>
             <Paper sx={{ p: 3, height: '100%' }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6" fontWeight="bold">
@@ -368,7 +375,7 @@ export default function AdminDashboard() {
                 </Button>
               </Box>
             </Paper>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </Layout>

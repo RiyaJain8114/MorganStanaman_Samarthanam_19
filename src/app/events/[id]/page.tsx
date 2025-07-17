@@ -518,7 +518,6 @@ const EventDetailsPage: React.FC = () => {
                 </Typography>
 
                 <Button 
-                  variant="outlined" 
                   fullWidth
                   sx={{ mb: 2, py: 1.5 }}
                   onClick={() => router.push(`/events/${params.id}/feedback`)}

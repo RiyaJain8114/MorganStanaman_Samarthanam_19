@@ -4,7 +4,7 @@ export interface User {
   uid: string;
   email: string;
   displayName: string;
-  role: 'participant' | 'volunteer' | 'admin';
+  role: 'participant' | 'volunteer' | 'admin' | "organizer";
   profileImage?: string;
   registeredEvents?: string[]; // Array of event IDs the user has registered for
 }

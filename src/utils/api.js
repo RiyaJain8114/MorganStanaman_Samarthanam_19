@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // API base URL - change this to your backend URL
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://samarthanam-backend.vercel.app/api';
+
 
 // Create an axios instance with common configs
 const apiClient = axios.create({

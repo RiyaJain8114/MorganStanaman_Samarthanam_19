@@ -3,16 +3,23 @@ from app import db, bcrypt
 from bson import ObjectId
 
 def serialize_user(user):
-    """Serialize user object to dictionary, excluding sensitive information"""
     if user:
-        user_dict = {
+        created_at = user.get('created_at')
+        if isinstance(created_at, datetime):
+            joined_at = created_at.strftime('%d %B %Y')  # Example: 15 July 2025
+        else:
+            joined_at = created_at  # fallback
+
+        return {
             'id': str(user['_id']),
             'name': user['name'],
             'email': user['email'],
             'role': user['role'],
-            'profile': user.get('profile', {})
+            'profile': user.get('profile', {}),
+            'status': 'active' if user.get('is_active', True) else 'inactive',
+            'joined_at': joined_at,
+            'is_verified': user.get('is_verified', False),
         }
-        return user_dict
     return None
 
 def get_user_by_email(email):
@@ -82,7 +89,7 @@ def create_user(name, email, password, role='volunteer', additional_data=None):
         'created_at': datetime.utcnow(),
         'updated_at': datetime.utcnow(),
         'last_login': None,
-        'is_active': True
+        'is_active': True,
     }
     
     # Insert user to database
@@ -91,7 +98,7 @@ def create_user(name, email, password, role='volunteer', additional_data=None):
     
     # Log the registration
     print(f"New user registered: {name}, {email}, role: {role}, id: {result.inserted_id}")
-    
+
     return serialize_user(user)
 
 def verify_password(user, password):

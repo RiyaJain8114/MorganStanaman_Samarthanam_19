@@ -11,6 +11,7 @@ user_bp = Blueprint('user', __name__)
 @user_bp.route('/profile', methods=['GET'])
 @token_required
 def get_profile(current_user):
+    print("Fetched current_user in /profile:", current_user)
     return jsonify(serialize_user(current_user)), 200
 
 # Update user profile

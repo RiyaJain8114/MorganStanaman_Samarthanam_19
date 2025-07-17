@@ -20,6 +20,7 @@ import Link from 'next/link';
 export interface EventData {
   id: string;
   title: string;
+  image?: string;
   description: string;
   startDate: string;
   endDate: string;
@@ -28,7 +29,7 @@ export interface EventData {
   status: 'upcoming' | 'ongoing' | 'completed';
   participantsLimit: number;
   currentParticipants: number;
-  pointsAwarded: number;
+  pointsAwarded?: number;
 }
 
 interface EventCardProps {
@@ -147,7 +148,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, variant = 'default' }) => 
           </Typography>
         </Box>
         
-        {event.pointsAwarded > 0 && (
+        {event.pointsAwarded! > 0 && (
           <Box sx={{ mt: 1 }}>
             <Chip 
               label={`${event.pointsAwarded} points`}

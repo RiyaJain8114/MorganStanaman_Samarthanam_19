@@ -43,6 +43,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SearchIcon from '@mui/icons-material/Search';
+import { userAPI, eventsAPI } from '../../../utils/api';
 
 // Import chart components
 import {
@@ -58,6 +59,8 @@ import {
   LineElement
 } from 'chart.js';
 import { Pie, Bar, Line } from 'react-chartjs-2';
+
+import { exportToCSV } from '@/utils/exportToCSV';
 
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement);
@@ -127,6 +130,30 @@ const topPerformingEvents = [
   { id: 5, name: 'Digital Literacy Camp', participants: 75, volunteers: 25, donations: '₹58,000', rating: 4.4 },
 ];
 
+//Interface for Volunteer Summary
+interface VolunteerSummary {
+  name: string;
+  email: string;
+  phone: string;
+  hoursLogged: number;
+  eventsParticipated: {
+    event_name: string;
+    description: string;
+    start_date: string;
+    end_date: string;
+    location: string;
+    category: string;
+    status: string;
+    publish_event: boolean;
+    points_awarded: number;
+    hours_required: number;
+    participant_limit: number;
+    age_restriction: string;
+    contact_information: string;
+    event_image: string;
+  };
+}
+
 // Interface for TabPanel props
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -163,9 +190,9 @@ export default function ReportsDashboard() {
   const [timeRange, setTimeRange] = useState('year');
   const [eventType, setEventType] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [volunteersSummary, setVolunteersSummary] = useState<VolunteerSummary[] | []>([]);
 
   useEffect(() => {
-    // Check if user is authenticated and is an admin
     if (!isAuthenticated) {
       router.push('/login');
       return;
@@ -176,12 +203,42 @@ export default function ReportsDashboard() {
       return;
     }
 
-    // Simulate loading delay
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    const loadVolunteers = async () => {
+      try {
+        const [volunteersResponse, eventsResponse] = await Promise.all([
+          userAPI.getAllUsers('volunteer'),
+          eventsAPI.getAllEvents()
+        ]);
 
-    return () => clearTimeout(timer);
+        const volunteersFetched = volunteersResponse.data.users;
+        const events = eventsResponse.data.events;
+
+        // Replace event IDs with actual event objects for each volunteer
+        const enrichedVolunteers = volunteersFetched.map((volunteer: any) => {
+          const eventIds = volunteer?.profile?.events_participated || [];
+
+          const fullEvents = events.filter((event: any) =>
+            eventIds.includes(event.event_id)
+          );
+
+          return {
+            ...volunteer,
+            profile: {
+              ...volunteer.profile,
+              events_participated: fullEvents,
+            },
+          };
+        });
+        console.log('Enriched Volunteers:', enrichedVolunteers);
+        setVolunteersSummary(enrichedVolunteers); // Assuming you use a state for volunteers
+      } catch (error) {
+        console.error('Error fetching volunteers or events:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadVolunteers();
   }, [isAuthenticated, router, user?.role]);
 
   // Handle tab change
@@ -198,9 +255,63 @@ export default function ReportsDashboard() {
   };
 
   // Filter events based on search
-  const filteredEvents = topPerformingEvents.filter((event) => 
+  const filteredEvents = topPerformingEvents.filter((event) =>
     event.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const flattenVolunteersForCSV = (volunteers: any[]) => {
+    const rows: any[] = [];
+
+    volunteers.forEach(volunteer => {
+      const commonFields = {
+        id: volunteer.id,
+        name: volunteer.name,
+        email: volunteer.email,
+        role: volunteer.role,
+        status: volunteer.status,
+        phone_number: volunteer.profile?.phone_number || '',
+        availability: volunteer.profile?.availability || '',
+        bio: volunteer.profile?.bio || '',
+        skills: (volunteer.profile?.skills || []).join('; '),
+        interests: (volunteer.profile?.interests || []).join('; '),
+        points: volunteer.profile?.points || 0,
+        hours_contributed: volunteer.profile?.hours_contributed || 0,
+        address: volunteer.profile?.address || '',
+        joined_at: volunteer.profile?.created_at || '',
+      };
+
+      const events = volunteer.profile?.events_participated || [];
+
+      if (events.length === 0) {
+        // No events, add just user info
+        rows.push({
+          ...commonFields,
+          event_id: '',
+          event_title: '',
+          event_date: '',
+          event_location: ''
+        });
+      } else {
+        // One row per event
+        events.forEach((event: { event_id: any; event_name: any; end_date: any; location: any; }) => {
+          rows.push({
+            ...commonFields,
+            event_id: event.event_id || '',
+            event_title: event.event_name || '',
+            event_date: event.end_date || '',
+            event_location: event.location || ''
+          });
+        });
+      }
+    });
+
+    return rows;
+  };
+
+  const handleDownloadVolunteerSummaryCSV = () => {
+    const flattenedData = flattenVolunteersForCSV(volunteersSummary);
+    exportToCSV(flattenedData, 'volunteers_summary');
+  };
 
   if (isLoading) {
     return (
@@ -236,12 +347,12 @@ export default function ReportsDashboard() {
         {/* Main content */}
         <Paper sx={{ mb: 4 }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs 
-              value={tabValue} 
-              onChange={handleTabChange} 
+            <Tabs
+              value={tabValue}
+              onChange={handleTabChange}
               aria-label="reports tabs"
               sx={{
-                '& .MuiTab-root': { 
+                '& .MuiTab-root': {
                   fontWeight: 'bold',
                   textTransform: 'none',
                   minHeight: 64,
@@ -271,7 +382,7 @@ export default function ReportsDashboard() {
               <Typography variant="body2" color="text.secondary" paragraph>
                 Generate and download various participation reports in CSV format.
               </Typography>
-              
+
               <Grid container spacing={3} mt={2}>
                 <Grid item xs={12} sm={6} md={3}>
                   <Card sx={{ height: '100%', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
@@ -282,18 +393,19 @@ export default function ReportsDashboard() {
                       <Typography variant="body2" color="text.secondary" paragraph>
                         Complete volunteer participation data with event details and hours logged.
                       </Typography>
-                      <Button 
-                        variant="outlined" 
+                      <Button
+                        variant="outlined"
                         startIcon={<DownloadIcon />}
                         fullWidth
                         sx={{ mt: 2, borderColor: THEME_COLORS.orange, color: THEME_COLORS.orange }}
+                        onClick={handleDownloadVolunteerSummaryCSV}
                       >
                         Download
                       </Button>
                     </CardContent>
                   </Card>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={6} md={3}>
                   <Card sx={{ height: '100%', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
                     <CardContent>
@@ -303,8 +415,8 @@ export default function ReportsDashboard() {
                       <Typography variant="body2" color="text.secondary" paragraph>
                         Report of volunteers grouped by their company affiliations and contributions.
                       </Typography>
-                      <Button 
-                        variant="outlined" 
+                      <Button
+                        variant="outlined"
                         startIcon={<DownloadIcon />}
                         fullWidth
                         sx={{ mt: 2, borderColor: THEME_COLORS.orange, color: THEME_COLORS.orange }}
@@ -314,7 +426,7 @@ export default function ReportsDashboard() {
                     </CardContent>
                   </Card>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={6} md={3}>
                   <Card sx={{ height: '100%', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
                     <CardContent>
@@ -324,8 +436,8 @@ export default function ReportsDashboard() {
                       <Typography variant="body2" color="text.secondary" paragraph>
                         Volunteer and participant turnout for each event with demographic data.
                       </Typography>
-                      <Button 
-                        variant="outlined" 
+                      <Button
+                        variant="outlined"
                         startIcon={<DownloadIcon />}
                         fullWidth
                         sx={{ mt: 2, borderColor: THEME_COLORS.orange, color: THEME_COLORS.orange }}
@@ -335,7 +447,7 @@ export default function ReportsDashboard() {
                     </CardContent>
                   </Card>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={6} md={3}>
                   <Card sx={{ height: '100%', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
                     <CardContent>
@@ -345,8 +457,8 @@ export default function ReportsDashboard() {
                       <Typography variant="body2" color="text.secondary" paragraph>
                         Breakdown of corporate volunteer participation across different events.
                       </Typography>
-                      <Button 
-                        variant="outlined" 
+                      <Button
+                        variant="outlined"
                         startIcon={<DownloadIcon />}
                         fullWidth
                         sx={{ mt: 2, borderColor: THEME_COLORS.orange, color: THEME_COLORS.orange }}
@@ -369,7 +481,7 @@ export default function ReportsDashboard() {
               <Typography variant="body2" color="text.secondary" paragraph>
                 Generate and download various donation reports in CSV format.
               </Typography>
-              
+
               <Grid container spacing={3} mt={2}>
                 <Grid item xs={12} sm={6} md={3}>
                   <Card sx={{ height: '100%', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
@@ -380,8 +492,8 @@ export default function ReportsDashboard() {
                       <Typography variant="body2" color="text.secondary" paragraph>
                         Complete donation transactions with amount, date, and donor information.
                       </Typography>
-                      <Button 
-                        variant="outlined" 
+                      <Button
+                        variant="outlined"
                         startIcon={<DownloadIcon />}
                         fullWidth
                         sx={{ mt: 2, borderColor: THEME_COLORS.orange, color: THEME_COLORS.orange }}
@@ -391,7 +503,7 @@ export default function ReportsDashboard() {
                     </CardContent>
                   </Card>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={6} md={3}>
                   <Card sx={{ height: '100%', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
                     <CardContent>
@@ -401,8 +513,8 @@ export default function ReportsDashboard() {
                       <Typography variant="body2" color="text.secondary" paragraph>
                         Summary of all donations made by corporate entities with details.
                       </Typography>
-                      <Button 
-                        variant="outlined" 
+                      <Button
+                        variant="outlined"
                         startIcon={<DownloadIcon />}
                         fullWidth
                         sx={{ mt: 2, borderColor: THEME_COLORS.orange, color: THEME_COLORS.orange }}
@@ -412,7 +524,7 @@ export default function ReportsDashboard() {
                     </CardContent>
                   </Card>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={6} md={3}>
                   <Card sx={{ height: '100%', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
                     <CardContent>
@@ -422,8 +534,8 @@ export default function ReportsDashboard() {
                       <Typography variant="body2" color="text.secondary" paragraph>
                         Breakdown of donations received for each event organized.
                       </Typography>
-                      <Button 
-                        variant="outlined" 
+                      <Button
+                        variant="outlined"
                         startIcon={<DownloadIcon />}
                         fullWidth
                         sx={{ mt: 2, borderColor: THEME_COLORS.orange, color: THEME_COLORS.orange }}
@@ -433,7 +545,7 @@ export default function ReportsDashboard() {
                     </CardContent>
                   </Card>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={6} md={3}>
                   <Card sx={{ height: '100%', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
                     <CardContent>
@@ -443,8 +555,8 @@ export default function ReportsDashboard() {
                       <Typography variant="body2" color="text.secondary" paragraph>
                         Geographic distribution of donations by location and region.
                       </Typography>
-                      <Button 
-                        variant="outlined" 
+                      <Button
+                        variant="outlined"
                         startIcon={<DownloadIcon />}
                         fullWidth
                         sx={{ mt: 2, borderColor: THEME_COLORS.orange, color: THEME_COLORS.orange }}

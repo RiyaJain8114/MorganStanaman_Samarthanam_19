@@ -15,15 +15,20 @@ import {
   registerForEventFailure
 } from '../slices/userSlice';
 
+import axios from 'axios';
+
 // Fetch user profile
 export const fetchUserProfile = () => async (dispatch: AppDispatch) => {
   try {
     dispatch(fetchProfileStart());
     const response = await api.user.getProfile();
     dispatch(fetchProfileSuccess(response.data));
-  } catch (error) {
+  } catch (error:unknown) {
     console.error('Error fetching profile:', error);
-    const errorMessage = error.response?.data?.message || 'Failed to fetch user profile';
+    let errorMessage = "Failed to fetch user profile";
+    if(axios.isAxiosError(error) && error.response?.data?.message){
+      errorMessage=error.response.data?.message
+    }
     dispatch(fetchProfileFailure(errorMessage));
   }
 };
@@ -37,7 +42,10 @@ export const updateUserProfile = (profileData: any) => async (dispatch: AppDispa
     return response.data;
   } catch (error) {
     console.error('Error updating profile:', error);
-    const errorMessage = error.response?.data?.message || 'Failed to update user profile';
+    let errorMessage = "Failed to update user profile";
+    if(axios.isAxiosError(error) && error.response?.data?.message){
+      errorMessage=error.response.data?.message
+    }
     dispatch(updateProfileFailure(errorMessage));
     throw error;
   }
@@ -53,7 +61,10 @@ export const registerForEvent = (eventId: string, eventData?: any) => async (dis
     return { success: true };
   } catch (error) {
     console.error('Error registering for event:', error);
-    const errorMessage = error.response?.data?.message || 'Failed to register for event';
+    let errorMessage = "Failed to register for event";
+    if(axios.isAxiosError(error) && error.response?.data?.message){
+      errorMessage=error.response.data?.message
+    }
     dispatch(registerForEventFailure(errorMessage));
     throw error;
   }
@@ -68,7 +79,10 @@ export const fetchLeaderboard = (period = 'all-time') => async (dispatch: AppDis
     return response.data;
   } catch (error) {
     console.error('Error fetching leaderboard:', error);
-    const errorMessage = error.response?.data?.message || 'Failed to fetch leaderboard data';
+    let errorMessage = "Failed to fetch leaderboard data";
+    if(axios.isAxiosError(error) && error.response?.data?.message){
+      errorMessage=error.response.data?.message
+    }
     dispatch(fetchLeaderboardFailure(errorMessage));
     throw error;
   }

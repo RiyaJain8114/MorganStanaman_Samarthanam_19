@@ -2,9 +2,10 @@
 
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { store } from '../redux/store';
+import { store, persistor} from '../redux/store';
 import AccessibilityWidgetWrapper from '@/components/accessibility/AccessibilityWidgetWrapper';
 
 // Create theme with high contrast colors for accessibility
@@ -281,13 +282,15 @@ function KeyboardNavigationHelper({ children }: { children: React.ReactNode }) {
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <KeyboardNavigationHelper>
-          {children}
-          <AccessibilityWidgetWrapper />
-        </KeyboardNavigationHelper>
-      </ThemeProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <KeyboardNavigationHelper>
+            {children}
+            <AccessibilityWidgetWrapper />
+          </KeyboardNavigationHelper>
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   );
 } 
